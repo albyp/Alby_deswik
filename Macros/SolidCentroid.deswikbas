@@ -1,0 +1,38 @@
+'#Language "WWB.NET"
+
+Imports Deswik.Graphics.Figures
+Imports Deswik.Graphics.Geometry
+Imports Deswik.Graphics.Primaries
+Imports Deswik.Graphics.Collections
+
+Sub Main()
+    ' Prompt user to select polyface
+    Dim sel As Selection = CurrentDoc.UserCommands.SelectionInteractiveGet( _
+        "Select solid to calculate centroid", "POLYFACE")
+
+    If sel Is Nothing OrElse sel.Count <> 1 Then
+        CurrentDoc.OnMessageOutput("Please select exactly one polyface.", False)
+        Exit Sub
+    End If
+
+    Dim fig As Figure = sel(0)
+
+    If fig.TypeName.ToUpper() <> "POLYFACE" Then
+        CurrentDoc.OnMessageOutput("Selected object is not a polyface.", False)
+        Exit Sub
+    End If
+
+    Dim pf As Polyface = fig.asPolyface
+
+    ' Get centroid of polyface
+    Dim c As Deswik.Graphics.Geometry.Point = pf.BoundingBox.Midpoint
+    
+    Dim cX As Double = c.x
+    Dim cY As Double = c.y
+    Dim cZ As Double = c.z
+
+    CurrentDoc.MessageOutputSimple( _
+        "X=" & cX.ToString("0.000") & _
+        "Y=" & cY.ToString("0.000") & _
+        "Z=" & cZ.ToString("0.000"))
+End Sub
